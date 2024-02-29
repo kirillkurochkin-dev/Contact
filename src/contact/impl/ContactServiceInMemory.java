@@ -1,11 +1,12 @@
 package contact.impl;
 
 import contact.Contact;
+import contact.ContactService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class ContactServiceInMemory {
+public class ContactServiceInMemory implements ContactService {
     private final List<Contact> contacts;
 
     public ContactServiceInMemory(List<Contact> contacts) {
