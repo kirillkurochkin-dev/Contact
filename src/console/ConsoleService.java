@@ -4,6 +4,8 @@ package console;
 
 import contact.Contact;
 import contact.ContactService;
+import exception.ValidationException;
+import validation.Validator;
 
 import java.util.List;
 import java.util.Scanner;
@@ -11,25 +13,33 @@ import java.util.Scanner;
 public class ConsoleService {
     private final ContactService contactService;
     private final Scanner scanner;
+    private final Validator validator;
 
-    public ConsoleService(ContactService contactService, Scanner scanner) {
+    public ConsoleService(ContactService contactService, Scanner scanner, Validator validator) {
         this.contactService = contactService;
         this.scanner = scanner;
+        this.validator = validator;
     }
 
     public void addContact() {
-        System.out.print("Введите имя контакта: ");
-        String name = scanner.nextLine();
-        System.out.print("Введите фамилию контакта: ");
-        String surname = scanner.nextLine();
-        System.out.print("Введите номер телефона: ");
-        String phone = scanner.nextLine();
-        System.out.print("Введите адрес электронной почты: ");
-        String email = scanner.nextLine();
 
-        Contact contact = new Contact(name, surname, phone, email);
-        contactService.addContact(contact);
-        System.out.println("Контакт успешно добавлен.");
+        try {
+            System.out.print("Введите имя контакта: ");
+            String name = validator.readNonEmptyString();
+            System.out.print("Введите фамилию контакта: ");
+            String surname = validator.readNonEmptyString();
+            System.out.print("Введите номер телефона: ");
+            String phone = validator.readPhoneNumber();
+            System.out.print("Введите адрес электронной почты: ");
+            String email = validator.readEmail();
+
+            Contact contact = new Contact(name, surname, phone, email);
+            contactService.addContact(contact);
+            System.out.println("Контакт успешно добавлен.");
+        } catch (ValidationException e) {
+            System.out.println("Произошла ошибка при добавлении контакта. Проверьте введенные данные.");
+        }
+
     }
 
     public void displayContacts() {
